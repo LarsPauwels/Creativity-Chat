@@ -1,14 +1,25 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var sassMiddleware = require('node-sass-middleware');
+let createError = require('http-errors');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
+let sassMiddleware = require('node-sass-middleware');
+let mongoose = require('mongoose');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+let indexRouter = require('./routes/index');
+let userRouter = require('./routes/user');
+let messageRouter = require('./routes/message');
+let aiRouter = require('./routes/ai');
 
-var app = express();
+let app = express();
+
+mongoose.connect('mongodb://localhost:27017/creativitychat', {useNewUrlParser: true})
+.then( () => {
+  console.log("connection success 😁");
+})
+.catch ((err) => {
+  console.log(`error: ${err} 😢`);
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,8 +37,11 @@ app.use(sassMiddleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+//app.use('/', indexRouter);
+//app.use('/user', userRouter);
+app.use('/api/v1/', messageRouter);
+//app.use('/ai', aiRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
