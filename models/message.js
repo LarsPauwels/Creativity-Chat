@@ -3,7 +3,7 @@ let Schema = mongoose.Schema;
 let messageSchema = new Schema({
   text: String,
   user: String,
-  timestamp: Date,
+  timestamp: String,
 })
 
 let Message = mongoose.model("Message", messageSchema)
