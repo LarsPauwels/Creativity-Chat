@@ -27,6 +27,40 @@
                 "message": message
             });
         }
+
+        getMessages(){
+            let url = "http://localhost:3000/api/v1/messages"
+            fetch(url,{
+                method:'get'
+            }).then(response => {
+                return response.json();
+            }).then( json => {
+                this.addMessages(json);
+            }).catch(err => {
+                console.log(err);
+            });
+
+        }
+
+        createMessage(){
+            let message = $('#message').val();
+            let user = Cookie.getCookie("username");
+            let url = "http://localhost:3000/api/v1/messages";
+            let data = {"text": message, "user": user};
+            console.log(data);
+        
+            fetch(url,{
+                method:'post',
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                return response.json();
+            }).catch(err => {
+                console.log(err);
+            });
+        }
     }
 
     class Cookie {
@@ -54,6 +88,7 @@
 
     $messageBtn.click(function(e){
         let app = new Message();
+        app.createMessage();
         $('#message').val('');
         e.preventDefault();
     });

@@ -4,12 +4,18 @@ let post = (req, res) => {
     let user = req.body.user;
     let text = req.body.text;
     let timestamp = getTimestamp(); 
+    console.log(text);
     
     let m = new Message();
     m.user = user;
     m.text = text;
     m.timestamp = timestamp;
     m.save();
+
+    res.json({
+        "status": "success",
+        "message": "GETTING message"
+    })
 }
 
 function getTimestamp(){
@@ -32,4 +38,9 @@ function getTimestamp(){
 
 }
 
+let get = function(){
+
+}
+
+module.exports.get = get;
 module.exports.post = post;
