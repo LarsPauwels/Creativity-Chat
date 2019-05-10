@@ -6,10 +6,7 @@ let logger = require('morgan');
 let sassMiddleware = require('node-sass-middleware');
 let mongoose = require('mongoose');
 
-let indexRouter = require('./routes/index');
-let userRouter = require('./routes/user');
 let messageRouter = require('./routes/message');
-let aiRouter = require('./routes/ai');
 
 let app = express();
 
@@ -37,8 +34,6 @@ app.use(sassMiddleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-//app.use('/user', userRouter);
 app.use('/api/v1/', messageRouter);
 //app.use('/ai', aiRouter);
 
