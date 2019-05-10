@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Login</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
 <body>
@@ -11,47 +12,58 @@
 			<h1 class="card__title">Login</h1>
 			<form>
 				<div class="input__container">
-					<input type="#{type}" id="#{label}" required="required"/>
-					<label for="#{label}">Username</label>
-					<div class="bar"></div>
+					<input type="text" id="usernameLogin" class="input input--dark" required="required"/>
+					<label for="usernameLogin" class="input__label input__label--dark">Username</label>
+					<div class="input__line input__line--dark"></div>
 				</div>
-				<div class="input-container">
-					<input type="#{type}" id="#{label}" required="required"/>
-					<label for="#{label}">Password</label>
-					<div class="bar"></div>
+				<div class="input__container">
+					<input type="password" id="passwordLogin" class="input input--dark" required="required"/>
+					<label for="passwordLogin" class="input__label input__label--dark">Password</label>
+					<div class="input__line input__line--dark"></div>
 				</div>
-				<div class="button-container">
-					<button><span>Go</span></button>
+				<div class="btn__container">
+					<button class="btn btn--dark">Go</button>
 				</div>
-				<div class="footer"><a href="#">Forgot your password?</a></div>
 			</form>
 		</div>
 		<div class="card card--red">
 			<div class="card__toggle"></div>
 			<h1 class="card__title">Register
-				<div class="close"></div>
+				<div class="card__close"><i class="fa fa-times" aria-hidden="true"></i></div>
 			</h1>
 			<form>
-				<div class="input-container">
-					<input type="#{type}" id="#{label}" required="required"/>
-					<label for="#{label}">Username</label>
-					<div class="bar"></div>
+				<div class="input__container">
+					<input type="text" id="usernameRegister" class="input input--light" required="required"/>
+					<label for="usernameRegister" class="input__label input__label--light">Username</label>
+					<div class="input__line input__line--light"></div>
 				</div>
-				<div class="input-container">
-					<input type="#{type}" id="#{label}" required="required"/>
-					<label for="#{label}">Password</label>
-					<div class="bar"></div>
+				<div class="input__container">
+					<input type="password" id="passwordRegister" class="input input--light" required="required"/>
+					<label for="passwordRegister" class="input__label input__label--light">Password</label>
+					<div class="input__line input__line--light"></div>
 				</div>
-				<div class="input-container">
-					<input type="#{type}" id="#{label}" required="required"/>
-					<label for="#{label}">Repeat Password</label>
-					<div class="bar"></div>
+				<div class="input__container">
+					<input type="password" id="passwordConfirm" class="input input--light" required="required"/>
+					<label for="passwordConfirm" class="input__label input__label--light">Repeat Password</label>
+					<div class="input__line input__line--light"></div>
 				</div>
-				<div class="button-container">
-					<button><span>Next</span></button>
+				<div class="btn__container">
+					<button class="btn btn--light">Next</button>
 				</div>
 			</form>
 		</div>
 	</div>
+	<script>
+		var toggle = document.querySelector('.card__toggle');
+		var container = document.querySelector('.container');
+		var close = document.querySelector('.card__close');
+		toggle.addEventListener('click', () => {
+			container.id = "active";
+		});
+
+		close.addEventListener('click', () => {
+			container.id = "";
+		});
+	</script>
 </body>
 </html>

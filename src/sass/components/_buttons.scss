@@ -1,0 +1,57 @@
+.btn {
+    outline: 0;
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    background: 0;
+    width: 240px;
+    border: 2px solid $lightGrey;
+    padding: 20px 0;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .3s ease;
+    color: $lightGrey;
+}
+
+.btn:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    background: $red;
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    margin: -15px 0 0 -15px;
+    opacity: 0;
+    transition: .3s ease;
+}
+
+.btn--light {
+    background: $white;
+    border-color: $white;
+    color: $red;
+}
+
+.btn__container {
+    margin: 0 60px;
+    text-align: center;
+}
+
+.card--red .btn__container{
+    left: 100px;
+    opacity: 0;
+    visibility: hidden;
+}
+
+#active .btn__container {
+    left: 0;
+    opacity: 1;
+    visibility: visible;
+    transition: $transitionStandard ease;
+    transition-delay: 0.7s;
+}

@@ -1,11 +1,21 @@
 @import "variables";
-@import "components/login";
+@import "components/input";
+@import "components/card";
+@import "components/buttons";
+@import "pages/login";
+
+
+
+* {
+    box-sizing: border-box;
+}
 
 body {
     background: $backgroundStandard;
-    color: $colorStandard;
+    color: $standardGrey;
     font-family: $roboto;
     font-size: $fontStandard;
+    line-height: $lineHeigthStandard;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }

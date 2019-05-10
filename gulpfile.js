@@ -49,4 +49,4 @@ function doNodemon(done) {
 
 watch('./src/sass/**/*.scss', parallel(sass2css));
 
-module.exports.default = series(doNodemon, doBrowserSync, sass2css);
+module.exports.default = parallel(sass2css, doNodemon, doBrowserSync );

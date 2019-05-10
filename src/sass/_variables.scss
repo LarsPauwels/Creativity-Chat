@@ -1,7 +1,36 @@
+//FONTS FAMILIES
 $roboto: "RobotoDraft", "Roboto", sans-serif;
 
+//FONTSIZES
 $fontStandard: 14px;
+$fontInput: 24px;
+$fontTitle: 32px;
 
-$colorStandard: #666666;
-$colorLightgray: #f2f2f2;
+//FONTWEIGHTS
+$weightSmall: 100;
+$weightLabel: 300;
+$weightMedium: 400;
+$weightBig: 600;
+$weightBigger: 900;
+
+//LINEHEIGHTS
+$lineHeigthStandard: 1;
+$lineHeightLabel: 60px;
+
+//TRANSITIONTIME
+$transitionStandard: .2s;
+
+//COLORS
+$white: #fff;
+$red: #ed2553;
+$standardGrey: #666666;
+$lightGrey: #e3e3e3;
+$inputGrey: #212121;
+$inputDark: #757575;
 $backgroundStandard: #e9e9e9;
+$cardBackgroundActive: #f2f2f2;
+$cardBackground: #fafafa;
+
+//BORDER RADIUS
+$borderCircle: 50%;
+$borderStandard: 5px;

@@ -1,0 +1,94 @@
+.input {
+    outline: none;
+    background: transparent;
+    border: none;
+    height: 60px;
+    width: 100%;
+    font-size: $fontInput;
+    font-weight: $weightMedium;
+}
+
+.input__label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: $fontInput;
+    font-weight: $weightLabel;
+    line-height: $lineHeightLabel;
+    transition: $transitionStandard ease;
+}
+
+.input__line {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    width: 100%;
+}
+
+.input__line:before {
+    left: 50%;
+}
+
+.input__label:after {
+    right: 50%;
+}
+
+.input__line:before, .input__line:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    transition: $transitionStandard ease;
+}
+
+#active .input--light {
+    color: $white;
+}
+
+#active .input__label--light {
+    color: $white;
+    opacity: 80%;
+}
+
+#active .input__line--light {
+    background-color: $white;
+}
+
+#active .input__line--light:before, .input__line--light:after {
+    opacity: 1;
+}
+
+.input--dark {
+    color: $inputGrey;
+}
+
+.input__label--dark {
+    color: $inputDark;
+}
+
+.input__line--dark {
+    background-color: $inputDark;
+}
+
+.input__line--dark:before, .input__line--dark:after {
+    background-color: $red;
+}
+
+.input__container {
+    position: relative;
+    margin: 0 60px 50px;
+}
+
+.card--red .input__container {
+    left: 100px;
+    opacity: 0;
+    visibility: hidden;
+}
+
+#active .card--red .input__container {
+    left: 0;
+    opacity: 1;
+    visibility: visible;
+    transition: $transitionStandard ease;
+}
