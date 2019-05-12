@@ -1,9 +1,13 @@
 @import "variables";
+
+//LOGIN PAGE
 @import "components/input";
 @import "components/card";
 @import "components/buttons";
 @import "pages/login";
 
+//CHAT PAGE
+@import "pages/chat";
 
 
 * {
@@ -11,6 +15,7 @@
 }
 
 body {
+	margin: 0;
     background: $backgroundStandard;
     color: $standardGrey;
     font-family: $roboto;
