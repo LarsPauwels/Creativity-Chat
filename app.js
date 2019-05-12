@@ -5,10 +5,13 @@ let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let sassMiddleware = require('node-sass-middleware');
 let mongoose = require('mongoose');
+const cors = require('cors');
 
+let userRouter = require('./routes/user');
 let messageRouter = require('./routes/message');
 
 let app = express();
+app.use(cors());
 
 mongoose.connect('mongodb://localhost:27017/creativitychat', {useNewUrlParser: true})
 .then( () => {
@@ -34,8 +37,13 @@ app.use(sassMiddleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/api/v1/', userRouter);
 app.use('/api/v1/', messageRouter);
-//app.use('/ai', aiRouter);
+
+app.use(express.static('dist'));
+app.get('/', function(req, res) {
+    res.sendfile('./dist/index.html');
+});
 
 
 // catch 404 and forward to error handler
@@ -53,5 +61,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+app.listen(3000);
 
 module.exports = app;

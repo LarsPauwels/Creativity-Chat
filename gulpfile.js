@@ -1,5 +1,7 @@
 const { src, dest, watch, parallel, series } = require('gulp');
 const sass = require('gulp-sass');
+const babel = require('gulp-babel');
+const uglify = require('gulp-uglify');
 const nodemon = require('gulp-nodemon');
 const browserSync = require('browser-sync').create();
 
@@ -12,18 +14,27 @@ function sass2css(done) {
 	done();
 }
 
+function essix2js(done) {
+	src("./src/js/*")
+		.pipe(babel({presets: ['@babel/env']}))
+		.pipe(uglify())
+		.pipe(dest("./dist/js/"))
+		.pipe(browserSync.stream());
+
+	done();
+}
+
 function doBrowserSync() {
 	browserSync.init({
-		server: {
-			baseDir: "./dist"
-		}
+        proxy: "http://localhost:3000",
+        port: 4000
 	});
 }
 
 function doNodemon(done) {
 	const STARTUP_TIMEOUT = 5000;
 	const server = nodemon({
-		script: './bin/www',
+		script: './app.js',
     	stdout: false // without this line the stdout event won't fire
 	});
 
@@ -48,5 +59,7 @@ function doNodemon(done) {
 }
 
 watch('./src/sass/**/*.scss', parallel(sass2css));
+watch('./src/js/**/*.js', parallel(essix2js));
 
-module.exports.default = parallel(sass2css, doNodemon, doBrowserSync );
+module.exports.convert = parallel(sass2css, essix2js);
+module.exports.default = parallel(sass2css, essix2js, doBrowserSync, doNodemon);

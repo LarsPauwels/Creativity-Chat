@@ -12,7 +12,7 @@
     line-height: 1;
     text-transform: uppercase;
     overflow: hidden;
-    transition: .3s ease;
+    transition: $transitionStandard ease;
     color: $lightGrey;
 }
 
@@ -31,10 +31,20 @@
     transition: .3s ease;
 }
 
+.btn--dark:hover {
+    border-color: $red;
+    color: $red;
+}
+
 .btn--light {
+    background: $whiteOpacity;
+    border-color: $whiteOpacity;
+    color: $red;
+}
+
+.btn--light:hover {
     background: $white;
     border-color: $white;
-    color: $red;
 }
 
 .btn__container {

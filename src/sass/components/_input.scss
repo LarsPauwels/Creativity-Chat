@@ -8,6 +8,13 @@
     font-weight: $weightMedium;
 }
 
+.input:focus ~ .input__label,
+.input:valid ~ .input__label {
+    color: $inputFocus;
+    -webkit-transform: translate(-12%, -50%) scale(0.75);
+    transform: translate(-12%, -50%) scale(0.75);
+}
+
 .input__label {
     position: absolute;
     top: 0;
@@ -27,14 +34,16 @@
 }
 
 .input__line:before {
-    left: 50%;
+    left: 0;
 }
 
-.input__label:after {
-    right: 50%;
+.input__line:after {
+    right: 0;
+    left: auto;
 }
 
-.input__line:before, .input__line:after {
+.input__line:before,
+.input__line:after {
     content: '';
     position: absolute;
     width: 0;
@@ -42,21 +51,30 @@
     transition: $transitionStandard ease;
 }
 
+.input:focus ~ .input__line:before,
+.input:focus ~ .input__line:after {
+    width: 50%;
+}
+
 #active .input--light {
     color: $white;
 }
 
 #active .input__label--light {
+    color: $whiteOpacity;
+}
+
+#active .input:focus ~ .input__label--light,
+#active .input:valid ~ .input__label--light {
     color: $white;
-    opacity: 80%;
 }
 
 #active .input__line--light {
-    background-color: $white;
+    background-color: $whiteOpacity;
 }
 
 #active .input__line--light:before, .input__line--light:after {
-    opacity: 1;
+    background-color: $white;
 }
 
 .input--dark {

@@ -18,15 +18,17 @@ $lineHeigthStandard: 1;
 $lineHeightLabel: 60px;
 
 //TRANSITIONTIME
-$transitionStandard: .2s;
+$transitionStandard: .3s;
 
 //COLORS
 $white: #fff;
+$whiteOpacity: rgba(255, 255, 255, 0.8);
 $red: #ed2553;
 $standardGrey: #666666;
 $lightGrey: #e3e3e3;
 $inputGrey: #212121;
 $inputDark: #757575;
+$inputFocus: #9d9d9d;
 $backgroundStandard: #e9e9e9;
 $cardBackgroundActive: #f2f2f2;
 $cardBackground: #fafafa;

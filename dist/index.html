@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Login</title>
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
@@ -10,7 +12,7 @@
 		<div class="card card__background"></div>
 		<div class="card">
 			<h1 class="card__title">Login</h1>
-			<form>
+			<div>
 				<div class="input__container">
 					<input type="text" id="usernameLogin" class="input input--dark" required="required"/>
 					<label for="usernameLogin" class="input__label input__label--dark">Username</label>
@@ -22,16 +24,16 @@
 					<div class="input__line input__line--dark"></div>
 				</div>
 				<div class="btn__container">
-					<button class="btn btn--dark">Go</button>
+					<button class="btn btn--dark" id="login">Go</button>
 				</div>
-			</form>
+			</div>
 		</div>
 		<div class="card card--red">
 			<div class="card__toggle"></div>
 			<h1 class="card__title">Register
 				<div class="card__close"><i class="fa fa-times" aria-hidden="true"></i></div>
 			</h1>
-			<form>
+			<div>
 				<div class="input__container">
 					<input type="text" id="usernameRegister" class="input input--light" required="required"/>
 					<label for="usernameRegister" class="input__label input__label--light">Username</label>
@@ -48,22 +50,13 @@
 					<div class="input__line input__line--light"></div>
 				</div>
 				<div class="btn__container">
-					<button class="btn btn--light">Next</button>
+					<button class="btn btn--light" id="register">Next</button>
 				</div>
-			</form>
+			</div>
 		</div>
 	</div>
-	<script>
-		var toggle = document.querySelector('.card__toggle');
-		var container = document.querySelector('.container');
-		var close = document.querySelector('.card__close');
-		toggle.addEventListener('click', () => {
-			container.id = "active";
-		});
 
-		close.addEventListener('click', () => {
-			container.id = "";
-		});
-	</script>
+	<script src="https://cdn.jsdelivr.net/gh/emn178/js-sha1/build/sha1.min.js" type="text/javascript"></script>
+	<script src="js/index.js" type="text/javascript"></script>
 </body>
 </html>
