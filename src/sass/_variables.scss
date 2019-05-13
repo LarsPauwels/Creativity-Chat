@@ -3,6 +3,9 @@ $roboto: "RobotoDraft", "Roboto", sans-serif;
 
 //FONTSIZES
 $fontStandard: 14px;
+$chatTitle: 15px;
+$fontMessage: 16px;
+$fontIcon: 18px;
 $fontInput: 24px;
 $fontTitle: 32px;
 
@@ -16,6 +19,7 @@ $weightBigger: 900;
 //LINEHEIGHTS
 $lineHeigthStandard: 1;
 $lineHeightLabel: 60px;
+$lineHeightUsername: 22px;
 
 //TRANSITIONTIME
 $transitionStandard: .3s;
@@ -24,15 +28,23 @@ $transitionStandard: .3s;
 $white: #fff;
 $whiteOpacity: rgba(255, 255, 255, 0.8);
 $red: #ed2553;
+$online: #21ce2c;
 $standardGrey: #666666;
 $lightGrey: #e3e3e3;
 $inputGrey: #212121;
 $inputDark: #757575;
 $inputFocus: #9d9d9d;
+$chatPrimary: #e6e6e6;
+$chatLight: #999;
+$chatBold: #1a1a1a;
+$backgroundChat: #f8f8f8;
 $backgroundStandard: #e9e9e9;
 $cardBackgroundActive: #f2f2f2;
 $cardBackground: #fafafa;
+$chatSecundary: #eceff1;
 
 //BORDER RADIUS
 $borderCircle: 50%;
 $borderStandard: 5px;
+$borderScroll: 10px;
+$borderSearch: 21px;

@@ -1,0 +1,11 @@
+@keyframes slideFromRight {
+	0% {
+		margin-right: -200px;
+		opacity: 0;
+	}
+
+	100% {
+		margin-right: 0;
+		opacity: 1;
+	}
+}
