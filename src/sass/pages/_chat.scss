@@ -201,7 +201,7 @@
     cursor: pointer;
 }
 
-.message:before {
+.message:after {
 	position: absolute;
     top: 19px;
     display: block;
@@ -214,6 +214,15 @@
     background-color: $chatSecundary;
 }
 
+.message--selected:before {
+    position: absolute;
+    right: 100%;
+    margin-right: 10px;
+    font-family: FontAwesome;
+    content: "\f1f8";
+    color: $red;
+}
+
 .message--red {
 	float: left;
     color: $white;
@@ -224,7 +233,7 @@
     cursor: default;
 }
 
-.message--red:before {
+.message--red:after {
 	left: -3px;
     background-color: $red;
 }

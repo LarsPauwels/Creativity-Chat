@@ -236,7 +236,12 @@ primus.on("data", (data)=>{
             }
         } else if (data.type == "update") {
             let element = document.querySelector(`[data-id="${data.id}"]`);
-            element.innerHTML = data.message;
+            if(Cookie.getCookie("username") == data.user){
+                element.innerHTML = data.message;
+            }else{
+                element.innerHTML = `<span class="message__user">${data.user}: </span> ${data.message}`;
+            }
+            
         }
     }
 });
@@ -249,6 +254,7 @@ function changeMessage(element) {
     messageInput.value = message;
     let id = element.getAttribute("data-id");
     messageId.value = id;
+    element.classList.add('message--selected');
 }
 
 updateDecline.addEventListener('click', e => {
