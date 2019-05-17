@@ -14,7 +14,7 @@ let messageRouter = require('./routes/message');
 let app = express();
 app.use(cors());
 
-mongoose.connect('mongodb:mongodb+srv://chat:tzhCkRmHbH6TY4Ba@cluster0-shdmi.mongodb.net/test?retryWrites=true', {useNewUrlParser: true})
+mongoose.connect('mongodb+srv://chat:tzhCkRmHbH6TY4Ba@cluster0-shdmi.mongodb.net/test?retryWrites=true', {useNewUrlParser: true})
 .then( () => {
   console.log("connection success 😁");
 })
