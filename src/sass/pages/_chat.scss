@@ -73,6 +73,7 @@
 
 .user--center {
 	display: inline-block;
+    width: 80%;
 }
 
 .user__picture {
@@ -113,7 +114,7 @@
 	margin-right: 5px;
 	content: '';
 	border-radius: $borderCircle;
-	background-color: $online;
+	background-color: $green;
 	width: 10px;
 	height: 10px;
 }
@@ -197,6 +198,7 @@
     align-self: flex-end;
     -webkit-animation-name: slideFromRight;
     animation-name: slideFromRight;
+    cursor: pointer;
 }
 
 .message:before {
@@ -219,11 +221,16 @@
     align-self: flex-start;
     -webkit-animation-name: slideFromLeft;
     animation-name: slideFromLeft;
+    cursor: default;
 }
 
 .message--red:before {
 	left: -3px;
     background-color: $red;
+}
+
+.message__user {
+    font-weight: $weightBigger;
 }
 
 .input__container--chat {

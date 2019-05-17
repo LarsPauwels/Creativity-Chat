@@ -13,21 +13,37 @@ let post = (req, res) => {
 }
 
 let getUser = (req, res) => {
-	let username = req.query.user;
+	if (req.query.user != null) {
+        let username = req.query.user;
 
-	User.findOne({username: username}, (err, userDocs)=>{    
-        if (userDocs === null || userDocs.length == 0) {
-        	res.json({
-				"status": "error",
-				"message": `Coudn't find a user with username ${username}`	
-			});
-        } else {
-        	res.json({
-	            "status": "success",
-	            "message": userDocs
-	        });
-        }
-    });
+        User.findOne({username: username}, (err, userDocs)=>{    
+            if (userDocs === null || userDocs.length == 0) {
+                res.json({
+                    "status": "error",
+                    "message": `Coudn't find a user with username ${username}`  
+                });
+            } else {
+                res.json({
+                    "status": "success",
+                    "message": userDocs
+                });
+            }
+        });
+    } else {
+        User.find((err, userDocs)=>{    
+            if (userDocs === null || userDocs.length == 0) {
+                res.json({
+                    "status": "error",
+                    "message": `Coudn't find any user`  
+                });
+            } else {
+                res.json({
+                    "status": "success",
+                    "message": userDocs
+                });
+            }
+        });
+    }
 
 	/*res.json({
 		"status": "success",

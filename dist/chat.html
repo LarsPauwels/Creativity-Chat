@@ -15,18 +15,11 @@
 				<input type="" name="" class="search" placeholder="Search...">
 				<button class="search__btn"><i class="fa fa-search" aria-hidden="true"></i></button>
 			</div>
-			<ul class="user__container">
+			<ul class="user__container" id="users">
 				<li class="user">
 					<div class="user--center">
 						<div class="user__picture"></div>
-						<span class="user__name">Username</span>
-						<span class="user_status">Online</span>
-					</div>
-				</li>
-				<li class="user">
-					<div class="user--center">
-						<div class="user__picture"></div>
-						<span class="user__name">Username</span>
+						<span class="user__name">AiBot</span>
 						<span class="user_status">Online</span>
 					</div>
 				</li>
@@ -42,25 +35,18 @@
 					</span>
 				</span>
 			</div>
-			<div class="message__container">
-				<div class="message__date">
-					<span class="message__date--text">
-						Today, 5:38 PM
-					</span>
-				</div>
-				<div class="message message--red">
-					Hello, can you hear me?
-				</div>
-				<div class="message">
-					Hello, can you hear me?
-				</div>
-			</div>
+			<div class="message__container" id="chat"></div>
 			<div class="input__container input__container--chat">
-				<input type="" name="" class="input message__input" placeholder="Your message (Enter to submit)">
-				<button class="message__btn"><i class="message__icon fa fa-paper-plane" aria-hidden="true"></i></button>
+				<input type="text" class="input message__input" placeholder="Your message (Enter to submit)" id="message">
+				<input type="hidden" id="messageId">
+				<button class="message__btn" id="sendMessage"><i class="message__icon fa fa-paper-plane" aria-hidden="true"></i></button>
+				<button class="message__btn message__btn--left message__update" id="updateDecline"><i class="fa fa-times message__icon" aria-hidden="true"></i></button>
+				<button class="message__btn message__btn--green message__update" id="updateSend"><i class="fa fa-check message__icon" aria-hidden="true"></i></button>
 			</div>
 		</div>
 	</div>
 
+	<script src="js/primus.js"></script>
+	<script src="js/chat.js"></script>
 </body>
 </html>

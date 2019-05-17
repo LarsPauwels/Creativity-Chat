@@ -34,7 +34,7 @@ function doBrowserSync() {
 function doNodemon(done) {
 	const STARTUP_TIMEOUT = 5000;
 	const server = nodemon({
-		script: './app.js',
+		script: './app',
     	stdout: false // without this line the stdout event won't fire
 	});
 
@@ -62,4 +62,4 @@ watch('./src/sass/**/*.scss', parallel(sass2css));
 watch('./src/js/**/*.js', parallel(essix2js));
 
 module.exports.convert = parallel(sass2css, essix2js);
-module.exports.default = parallel(sass2css, essix2js, doBrowserSync, doNodemon);
+module.exports.default = parallel(sass2css, essix2js, /*doNodemon,*/ doBrowserSync);

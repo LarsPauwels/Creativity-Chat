@@ -6,6 +6,7 @@ let logger = require('morgan');
 let sassMiddleware = require('node-sass-middleware');
 let mongoose = require('mongoose');
 const cors = require('cors');
+const http = require('http');
 
 let userRouter = require('./routes/user');
 let messageRouter = require('./routes/message');
@@ -62,6 +63,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(3000);
+//app.listen(3000);
 
 module.exports = app;

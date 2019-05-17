@@ -6,6 +6,6 @@ let messageSchema = new Schema({
   timestamp: String
 });
 
-let Message = mongoose.model("Message", messageSchema)
+let Message = mongoose.model("messages", messageSchema)
 
 module.exports = Message;

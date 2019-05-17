@@ -36,6 +36,10 @@ class Cookie {
 	}
 }
 
+if (Cookie.getCookie("username") != null) {
+    location.href = 'chat.html';
+}
+
 register.addEventListener('click', e => {
 	let user = new User;
 	user.usernameExists(username.value);
@@ -53,6 +57,7 @@ class User {
 		let user = username.value;
 		let password = document.getElementById("passwordRegister").value;
 		let passwordConfirm = document.getElementById("passwordConfirm").value;
+		this.setPrimus(user);
 
 		if(this.emptyFields(user, password, passwordConfirm)) {
 			if (this.passwordEqual(password, passwordConfirm)) {
@@ -69,7 +74,7 @@ class User {
 				}).then(response => {
 					return response.json();
 				}).then( json => {
-					Cookie.setCookie("username", user.value, 10);
+					Cookie.setCookie("username", user, 10);
 					location.href = 'chat.html';
 				}).catch(err => {
 					console.log(err);
@@ -117,11 +122,29 @@ class User {
 		});
 	}
 
+	setPrimus(username) {
+        let that = this;
+
+        this.primus = Primus.connect('/', {
+            reconnect: {
+                 max: Infinity // Number: The max delay before we try to reconnect.
+                , min: 500 // Number: The minimum delay before we try reconnect.
+                , retries: 10 // Number: How many times we should try to reconnect.
+            }
+        });
+
+
+        that.primus.write({
+            "username": username
+        });
+    }
+
 	login() {
 		let username = document.getElementById("usernameLogin").value;
 		let password = sha1(document.getElementById("passwordLogin").value);
 
 		if (this.emptyFields(username, password, "empty")) {
+
 			let url = `http://localhost:3000/api/v1/user?user=${username}`;
 
 			fetch(url,{
