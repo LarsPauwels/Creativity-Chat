@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="css/app.css">
+</head>
+<body class="body--grey">
+
+	<div class="chat">
+		<div class="chat__sidebar">
+			<div class="chat__search">
+				<input type="" name="" class="search" placeholder="Search...">
+				<button class="search__btn"><i class="fa fa-search" aria-hidden="true"></i></button>
+			</div>
+			<ul class="user__container" id="users">
+				<li class="user">
+					<div class="user--center">
+						<div class="user__picture"></div>
+						<span class="user__name">AiBot</span>
+						<span class="user_status">Online</span>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		<div class="chat__container">
+			<div class="chat__title">
+				<span>
+					To:
+					<span class="chat__title--bold">
+						Everyone + AiBot
+					</span>
+				</span>
+			</div>
+			<div class="message__container" id="chat"></div>
+			<div class="input__container input__container--chat">
+				<input type="text" class="input message__input" placeholder="Your message (Enter to submit)" id="message">
+				<input type="hidden" id="messageId">
+				<button class="message__btn" id="sendMessage"><i class="message__icon fa fa-paper-plane" aria-hidden="true"></i></button>
+				<button class="message__btn message__btn--left message__update" id="updateDecline"><i class="fa fa-times message__icon" aria-hidden="true"></i></button>
+				<button class="message__btn message__btn--green message__update" id="updateSend"><i class="fa fa-check message__icon" aria-hidden="true"></i></button>
+			</div>
+		</div>
+	</div>
+
+	<script src="js/primus.js"></script>
+	<script src="js/chat.js"></script>
+</body>
+</html>

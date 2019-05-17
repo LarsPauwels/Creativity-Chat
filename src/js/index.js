@@ -62,7 +62,7 @@ class User {
 		if(this.emptyFields(user, password, passwordConfirm)) {
 			if (this.passwordEqual(password, passwordConfirm)) {
 				password = sha1(password);
-				let url = "http://localhost:3000/api/v1/user";
+				let url = "./api/v1/user";
 				let data = {username: user, password: password, timestamp: getTimestamp()};
 
 				fetch(url,{
@@ -102,7 +102,7 @@ class User {
 	}
 
 	usernameExists(username) {
-		let url = `http://localhost:3000/api/v1/user?user=${username}`;
+		let url = `./api/v1/user?user=${username}`;
 
 		fetch(url,{
 			method:'get',
@@ -145,7 +145,7 @@ class User {
 
 		if (this.emptyFields(username, password, "empty")) {
 
-			let url = `http://localhost:3000/api/v1/user?user=${username}`;
+			let url = `./api/v1/user?user=${username}`;
 
 			fetch(url,{
 				method:'get',

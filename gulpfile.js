@@ -8,7 +8,7 @@ const browserSync = require('browser-sync').create();
 function sass2css(done) {
 	src("./src/sass/app.scss")
 		.pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-		.pipe(dest("./dist/css/"))
+		.pipe(dest("./public/css/"))
 		.pipe(browserSync.stream());
 
 	done();
@@ -18,7 +18,7 @@ function essix2js(done) {
 	src("./src/js/*")
 		.pipe(babel({presets: ['@babel/env']}))
 		.pipe(uglify())
-		.pipe(dest("./dist/js/"))
+		.pipe(dest("./public/js/"))
 		.pipe(browserSync.stream());
 
 	done();

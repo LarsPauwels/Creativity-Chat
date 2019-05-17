@@ -38,7 +38,7 @@ class Message {
         let user = Cookie.getCookie("username");
         let id;
 
-        let url = "http://localhost:3000/api/v1/messages";
+        let url = "./api/v1/messages";
         let data = {text: message, user: user};
         
         fetch(url,{
@@ -58,7 +58,7 @@ class Message {
     }
 
     getMessages() {
-        let url = "http://localhost:3000/api/v1/messages";
+        let url = "./api/v1/messages";
         
         fetch(url,{
             method:'get',
@@ -99,7 +99,7 @@ class Message {
         let id = idInput.value;
         let message = messageInput.value;
 
-        let url = `http://localhost:3000/api/v1/messages/${id}`;
+        let url = `./api/v1/messages/${id}`;
         let data = {text: message};
         
         fetch(url,{
@@ -147,7 +147,7 @@ class User {
     }
 
     getUsers() {
-        let url = "http://localhost:3000/api/v1/user";
+        let url = "./api/v1/user";
         
         fetch(url,{
             method:'get',
