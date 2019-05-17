@@ -14,7 +14,7 @@ let messageRouter = require('./routes/message');
 let app = express();
 app.use(cors());
 
-mongoose.connect('mongodb+srv://chat:tzhCkRmHbH6TY4Ba@cluster0-shdmi.mongodb.net/test?retryWrites=true', {useNewUrlParser: true})
+mongoose.connect('mongodb://chat:tzhCkRmHbH6TY4Ba@cluster0-shard-00-00-8zgqm.mongodb.net:27017,cluster0-shard-00-01-8zgqm.mongodb.net:27017,cluster0-shard-00-02-8zgqm.mongodb.net:27017/Creativity-Chat?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin', {useNewUrlParser: true})
 .then( () => {
   console.log("connection success 😁");
 })
