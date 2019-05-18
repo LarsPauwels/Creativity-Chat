@@ -51,7 +51,7 @@ class Message {
             return response.json();
         }).then(json => {
             id = json.id;
-            Message.setPrimus(id, "create");
+            Message.setPrimus(id, "createMessage");
         }).catch(err => {
             console.log(err);
         });
@@ -82,7 +82,7 @@ class Message {
                 }
 
                 if (Cookie.getCookie("username") == element.user) {
-                    chat.innerHTML += `<div class="message" onclick="changeMessage(this)" data-id="${element._id}">${element.text}</div>`;
+                    chat.innerHTML += `<div class="message--right"><span class="message__delete fa fa-trash" onclick="removeMessage()"></span><div class="message" onclick="changeMessage(this)" data-id="${element._id}">${element.text}</div><div>`;
                 } else {
                     chat.innerHTML += `<div class="message message--red" data-id="${element._id}"><span class="message__user">${element.user}: </span>${element.text}</div>`;
                 }
@@ -111,7 +111,26 @@ class Message {
         }).then(response => {
             return response.json();
         }).then(json => {
-            Message.setPrimus(id, "update");
+            Message.setPrimus(id, "updateMessage");
+            addMessage();
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
+    deleteMessage() {
+        let id = idInput.value;
+        let url = `./api/v1/messages/${id}`;
+        
+        fetch(url,{
+            method:'delete',
+            headers: {
+                "Content-type": "application/json"
+            }
+        }).then(response => {
+            return response.json();
+        }).then(json => {
+            Message.setPrimus(id, "deleteMessage");
             addMessage();
         }).catch(err => {
             console.log(err);
@@ -130,21 +149,6 @@ class Message {
 }
 
 class User {
-    setPrimus(username) {
-        let that = this;
-
-        this.primus = Primus.connect('/', {
-            reconnect: {
-                 max: Infinity // Number: The max delay before we try to reconnect.
-                , min: 500 // Number: The minimum delay before we try reconnect.
-                , retries: 10 // Number: How many times we should try to reconnect.
-            }
-        });
-
-        that.primus.write({
-            "username": username
-        });
-    }
 
     getUsers() {
         let url = "./api/v1/user";
@@ -225,24 +229,31 @@ let primus = Primus.connect('/', {
 });
 
 primus.on("data", (data)=>{
-    if (data.username != null) {
-        users.innerHTML += `<li class="user"><div class="user--center"><div class="user__picture"></div><span class="user__name">${data.username}</span><span class="user_status">Online</span></div></li>`;
-    } else {
-        if (data.type == "create") {
+    let element;
+
+    switch (data.type) {
+        case "addUser":
+            users.innerHTML += `<li class="user"><div class="user--center"><div class="user__picture"></div><span class="user__name">${data.username}</span><span class="user_status">Online</span></div></li>`;
+            break;
+        case "createMessage":
             if (Cookie.getCookie("username") == data.user) {
-                chat.innerHTML += `<div class="message" onclick="changeMessage(this)" data-id="${data.id}">${data.message}</div>`;
+                chat.innerHTML += `<div class="message--right"><span class="message__delete fa fa-trash" onclick="removeMessage()"></span><div class="message" onclick="changeMessage(this)" data-id="${data.id}">${data.message}</div></div>`;
             } else {
                 chat.innerHTML += `<div class="message message--red" data-id="${data.id}"><span class="message__user">${data.user}: </span>${data.message}</div>`;
             }
-        } else if (data.type == "update") {
-            let element = document.querySelector(`[data-id="${data.id}"]`);
+            break;
+        case "updateMessage":
+            element = document.querySelector(`[data-id="${data.id}"]`);
             if(Cookie.getCookie("username") == data.user){
                 element.innerHTML = data.message;
             }else{
                 element.innerHTML = `<span class="message__user">${data.user}: </span> ${data.message}`;
             }
-            
-        }
+            break;
+        case "deleteMessage":
+            element = document.querySelector(`[data-id="${data.id}"]`);
+            element.parentElement.removeChild(element);
+            break;
     }
 });
 
@@ -254,7 +265,12 @@ function changeMessage(element) {
     messageInput.value = message;
     let id = element.getAttribute("data-id");
     messageId.value = id;
-    element.classList.add('message--selected');
+    element.previousSibling.style.display = "inline-block";
+}
+
+function removeMessage() {
+    let m = new Message();
+    m.deleteMessage();
 }
 
 updateDecline.addEventListener('click', e => {
@@ -268,10 +284,13 @@ updateSend.addEventListener('click', e => {
     e.preventDefault();
 });
 
-function addMessage() {
+function addMessage(element) {
+    let message = document.querySelector(`[data-id="${messageId.value}"]`);
+
     messageBtn.style.display = "inline-block";
     updateDecline.style.display = "none";
     updateSend.style.display = "none";
+    message.previousSibling.style.display = "none";
     messageInput.value = "";
     messageId.value = "";
 }

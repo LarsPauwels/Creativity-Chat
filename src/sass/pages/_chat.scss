@@ -183,19 +183,20 @@
 	right: 0;
 }
 
+.message--right {
+    display: flex;
+    justify-content: flex-end;
+}
+
 .message {
 	font-size: $fontMessage;
     position: relative;
-    display: inline-block;
-    clear: both;
     margin-bottom: 8px;
     padding: 13px 14px;
     vertical-align: top;
     border-radius: $borderStandard;
-    float: right;
     color: $chatBold;
     background-color: $chatSecundary;
-    align-self: flex-end;
     -webkit-animation-name: slideFromRight;
     animation-name: slideFromRight;
     cursor: pointer;
@@ -214,15 +215,6 @@
     background-color: $chatSecundary;
 }
 
-.message--selected:before {
-    position: absolute;
-    right: 100%;
-    margin-right: 10px;
-    font-family: FontAwesome;
-    content: "\f1f8";
-    color: $red;
-}
-
 .message--red {
 	float: left;
     color: $white;
@@ -236,6 +228,15 @@
 .message--red:after {
 	left: -3px;
     background-color: $red;
+}
+
+.message__delete {
+    color: $red;
+    align-self: center;
+    transform: translateY(-25%);
+    margin-right: 10px;
+    cursor: pointer;
+    display: none;
 }
 
 .message__user {

@@ -57,7 +57,7 @@ class User {
 		let user = username.value;
 		let password = document.getElementById("passwordRegister").value;
 		let passwordConfirm = document.getElementById("passwordConfirm").value;
-		this.setPrimus(user);
+		this.setPrimus(user, "addUser");
 
 		if(this.emptyFields(user, password, passwordConfirm)) {
 			if (this.passwordEqual(password, passwordConfirm)) {
@@ -122,7 +122,7 @@ class User {
 		});
 	}
 
-	setPrimus(username) {
+	setPrimus(username, type) {
         let that = this;
 
         this.primus = Primus.connect('/', {
@@ -136,6 +136,7 @@ class User {
 
         that.primus.write({
             "username": username
+            "type": type
         });
     }
 
