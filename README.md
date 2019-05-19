@@ -1,6 +1,7 @@
 # Creativity-Chat
 <br>
-## To Do:<br>
+
+## ToDo:
 ### 1. Frontend
 * Maak je design of branding eerst in Figma
 
