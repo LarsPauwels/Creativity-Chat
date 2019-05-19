@@ -8,6 +8,14 @@ let post = (req, res) => {
     let m = new Message();
     m.user = user;
     m.text = text;
+
+    if (req.body.device != "" && req.body.requester) {
+        let device = req.body.device;
+        let requester = req.body.requester;
+        m.device = device;
+        m.requester = requester;
+    }
+
     m.timestamp = timestamp;
     m.save((err, product) => {
         if (!err) {

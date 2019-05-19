@@ -81,10 +81,15 @@ class Message {
                     }
                 }
 
-                if (Cookie.getCookie("username") == element.user) {
-                    chat.innerHTML += `<div class="message--right"><span class="message__delete fa fa-trash" onclick="removeMessage()"></span><div class="message" onclick="changeMessage(this)" data-id="${element._id}">${element.text}</div><div>`;
-                } else {
+                if (element.device == "beamer" && Cookie.getCookie("username") == "admin"
+                    || element.device == "computer" && Cookie.getCookie("username") == element.requester) {
                     chat.innerHTML += `<div class="message message--red" data-id="${element._id}"><span class="message__user">${element.user}: </span>${element.text}</div>`;
+                } else if (element.device == undefined) {
+                    if (Cookie.getCookie("username") == element.user) {
+                        chat.innerHTML += `<div class="message--right"><span class="message__delete fa fa-trash" onclick="removeMessage()"></span><div class="message" onclick="changeMessage(this)" data-id="${element._id}">${element.text}</div><div>`;
+                    } else {
+                        chat.innerHTML += `<div class="message message--red" data-id="${element._id}"><span class="message__user">${element.user}: </span>${element.text}</div>`;
+                    }
                 }
 
                 i++;
@@ -149,7 +154,7 @@ class Message {
 }
 
 class IMDBot {
-    static setPrimus(id, type, user, message) {
+    static setPrimus(id, type, user, message, device, requester) {
         let that = this;
 
         this.primus = Primus.connect('/', {
@@ -164,11 +169,14 @@ class IMDBot {
             "user": user,
             "message": message,
             "id": id,
-            "type": type
+            "type": type,
+            "device": device,
+            "requester": requester
         });
     }
 
     botRequest() {
+        let requester = Cookie.getCookie("username");
         let messageText = message.value.replace('@IMDBot','');
         let url = `https://api.wit.ai/message?v=20190518&q=${messageText}`;
 
@@ -180,23 +188,22 @@ class IMDBot {
         }).then(response => {
             return response.json();
         }).then(json => {
-            IMDBot.checkIntent(json);
+            IMDBot.checkIntent(json, requester);
         }).catch(err => {
             console.log(err);
         });
     }
 
-    static checkIntent(json) {
+    static checkIntent(json, requester) {
         switch (json.entities.intent[0].value) {
             case "play_clip":
-                /*let iframe = `<iframe width="560" height="315" src="https://www.youtube.com/embed/`${}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
-                createMessage("");*/
-                IMDBot.youtubeRequest(json);
+                let device = json.entities.device[0].value;
+                IMDBot.youtubeRequest(json, device, requester);
                 break;
         }
     }
 
-    static youtubeRequest(json) {
+    static youtubeRequest(json, device, requester) {
         let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=rating&q=${json.entities.query[0].value}&type=video&videoEmbeddable=true&key=AIzaSyCq26SiNiH7Qcec_xKTF5NB06VBdvteFE0`;
 
         fetch(url,{
@@ -204,19 +211,21 @@ class IMDBot {
         }).then(response => {
             return response.json();
         }).then(json => {
+            let text = `Enjoy your video ${requester}!`;
             let iframe = `<iframe class="message__iframe" width="560" height="315" src="https://www.youtube.com/embed/${json.items[0].id.videoId}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-            IMDBot.createMessage(iframe);
+            let messageIframe = text + iframe;
+            IMDBot.createMessage(messageIframe, device, requester);
         }).catch(err => {
             console.log(err);
         });
     }
 
-    static createMessage(message) {
+    static createMessage(message, device, requester) {
         let user = "IMDBot";
         let id;
 
         let url = "./api/v1/messages";
-        let data = {text: message, user: user};
+        let data = {text: message, user: user, device: device, requester: requester};
         
         fetch(url,{
             method:'post',
@@ -228,7 +237,7 @@ class IMDBot {
             return response.json();
         }).then(json => {
             id = json.id;
-            IMDBot.setPrimus(id, "createMessageBot", user, message);
+            IMDBot.setPrimus(id, "createMessageBot", user, message, device, requester);
         }).catch(err => {
             console.log(err);
         });
@@ -306,15 +315,11 @@ function messagePlaced() {
     if (messageValue != "") {
         let botCommant = messageValue.search("@IMDBot");
        if (botCommant != -1) {
-            let m = new Message();
-            m.createMessage();
-
             let b = new IMDBot();
             b.botRequest();
-       } else {
-            let m = new Message();
-            m.createMessage();
        }
+        let m = new Message();
+        m.createMessage();
     }
 }
 
@@ -335,9 +340,9 @@ primus.on("data", (data)=>{
             break;
         case "createMessage":
             if (Cookie.getCookie("username") == data.user) {
-                chat.innerHTML += `<div class="message--right"><span class="message__delete fa fa-trash" onclick="removeMessage()"></span><div class="message" onclick="changeMessage(this)" data-id="${data.id}">${data.message}</div></div>`;
+                chat.insertAdjacentHTML("beforeend", `<div class="message--right"><span class="message__delete fa fa-trash" onclick="removeMessage()"></span><div class="message" onclick="changeMessage(this)" data-id="${data.id}">${data.message}</div></div>`);
             } else {
-                chat.innerHTML += `<div class="message message--red" data-id="${data.id}"><span class="message__user">${data.user}: </span>${data.message}</div>`;
+                chat.insertAdjacentHTML("beforeend", `<div class="message message--red" data-id="${data.id}"><span class="message__user">${data.user}: </span>${data.message}</div>`);
             }
             break;
         case "updateMessage":
@@ -353,18 +358,28 @@ primus.on("data", (data)=>{
             element.parentElement.removeChild(element);
             break;
         case "createMessageBot":
-            let iframes = document.querySelectorAll("iframe").forEach(element => {
-                let src = element.getAttribute("src");
-                if (src.includes("?autoplay=1")) {
-                    let split = src.split("?");
-                    element.setAttribute("src", split[0]);
-                }
-            });
+        console.log("test");
+            if (data.device == "computer" && Cookie.getCookie("username") == data.requester 
+                || data.device == "beamer" && Cookie.getCookie("username") == "admin") {
+                let lastElment;
+                let iframes = document.querySelectorAll("iframe").forEach(element => {
+                    let src = element.getAttribute("src");
+                    if (src.includes("?autoplay=1")) {
+                        let split = src.split("?");
+                        element.setAttribute("src", split[0]);
+                        lastElment = element;
+                    }
+                });
 
-            chat.innerHTML += `<div class="message message--red" data-id="${data.id}"><span class="message__user">${data.user}: </span>${data.message}</div>`;
-            let iframe = document.querySelector(`[data-id="${data.id}"]`).lastChild;
-            let iframeSrc = iframe.getAttribute("src") + "?autoplay=1";
-            iframe.setAttribute("src", iframeSrc);
+                chat.insertAdjacentHTML("beforeend", `<div class="message message--red" data-id="${data.id}"><span class="message__user">${data.user}: </span>${data.message}</div>`);
+                
+                let iframe = document.querySelector(`[data-id="${data.id}"]`).lastChild;
+                
+                if (lastElment != iframe) {
+                    let iframeSrc = iframe.getAttribute("src") + "?autoplay=1";
+                    iframe.setAttribute("src", iframeSrc);
+                }
+            }
         break;
     }
 });

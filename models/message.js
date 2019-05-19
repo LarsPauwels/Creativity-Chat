@@ -3,6 +3,8 @@ let Schema = mongoose.Schema;
 let messageSchema = new Schema({
   text: String,
   user: String,
+  device: String,
+  requester: String,
   timestamp: String
 });
 
