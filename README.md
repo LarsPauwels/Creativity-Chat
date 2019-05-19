@@ -1,5 +1,15 @@
 # Creativity-Chat
 <br>
+## To Do:
+### 1. Frontend
+* Maak je design of branding eerst in Figma
+
+### 3. Functionaliteit
+* Toon  LIVE   het aantal geconnecteerde gebruikers en wié dat zijn (vb: profielfoto’s?)
+* Je API zou enkel aanspreekbaar mogen zijn als een gebruiker een correct token heeft
+* GET /user/profile => kan vervangen worden door weer binnen de ai
+
+
 ## Done:
 ### 1. Frontend
 * De layout wordt gebouwd met CSS Grid en flexbox
@@ -22,12 +32,3 @@
 * GET /messages/:id
 * DELETE /messages/:id
 * PUT /messages/:id
-
-## To Do:
-### 1. Frontend
-* Maak je design of branding eerst in Figma
-
-### 3. Functionaliteit
-* Toon  LIVE   het aantal geconnecteerde gebruikers en wié dat zijn (vb: profielfoto’s?)
-* Je API zou enkel aanspreekbaar mogen zijn als een gebruiker een correct token heeft
-* GET /user/profile => kan vervangen worden door weer binnen de ai
