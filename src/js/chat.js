@@ -148,6 +148,93 @@ class Message {
     }
 }
 
+class IMDBot {
+    static setPrimus(id, type, user, message) {
+        let that = this;
+
+        this.primus = Primus.connect('/', {
+            reconnect: {
+                 max: Infinity // Number: The max delay before we try to reconnect.
+                , min: 500 // Number: The minimum delay before we try reconnect.
+                , retries: 10 // Number: How many times we should try to reconnect.
+            }
+        });
+
+        that.primus.write({
+            "user": user,
+            "message": message,
+            "id": id,
+            "type": type
+        });
+    }
+
+    botRequest() {
+        let messageText = message.value.replace('@IMDBot','');
+        let url = `https://api.wit.ai/message?v=20190518&q=${messageText}`;
+
+        fetch(url,{
+            method:'get',
+            headers: {
+                'Authorization': 'Bearer LDAHTGYL7ZM3Y636JBPSA5XTXYVYHEVA', 
+            }
+        }).then(response => {
+            return response.json();
+        }).then(json => {
+            IMDBot.checkIntent(json);
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
+    static checkIntent(json) {
+        switch (json.entities.intent[0].value) {
+            case "play_clip":
+                /*let iframe = `<iframe width="560" height="315" src="https://www.youtube.com/embed/`${}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+                createMessage("");*/
+                IMDBot.youtubeRequest(json);
+                break;
+        }
+    }
+
+    static youtubeRequest(json) {
+        let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=rating&q=${json.entities.query[0].value}&type=video&videoEmbeddable=true&key=AIzaSyCq26SiNiH7Qcec_xKTF5NB06VBdvteFE0`;
+
+        fetch(url,{
+            method:'get'
+        }).then(response => {
+            return response.json();
+        }).then(json => {
+            let iframe = `<iframe class="message__iframe" width="560" height="315" src="https://www.youtube.com/embed/${json.items[0].id.videoId}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            IMDBot.createMessage(iframe);
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
+    static createMessage(message) {
+        let user = "IMDBot";
+        let id;
+
+        let url = "./api/v1/messages";
+        let data = {text: message, user: user};
+        
+        fetch(url,{
+            method:'post',
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            return response.json();
+        }).then(json => {
+            id = json.id;
+            IMDBot.setPrimus(id, "createMessageBot", user, message);
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+}
+
 class User {
 
     getUsers() {
@@ -203,22 +290,33 @@ let u = new User();
 u.getUsers();
 
 messageBtn.addEventListener('click', e => {
-    if (message.value != "") {
-        let m = new Message();
-        m.createMessage();
-    }
-
+    messagePlaced();
     e.preventDefault();
 });
 
 messageInput.addEventListener('keypress', e => {
-    if (e.keyCode == 13 && message.value != "") {
-        let m = new Message();
-        m.createMessage(this);
-
+    if (e.keyCode == 13) {
+        messagePlaced();
         e.preventDefault();
     }
 });
+
+function messagePlaced() {
+    let messageValue = message.value;
+    if (messageValue != "") {
+        let botCommant = messageValue.search("@IMDBot");
+       if (botCommant != -1) {
+            let m = new Message();
+            m.createMessage();
+
+            let b = new IMDBot();
+            b.botRequest();
+       } else {
+            let m = new Message();
+            m.createMessage();
+       }
+    }
+}
 
 let primus = Primus.connect('/', {
     reconnect: {
@@ -254,6 +352,20 @@ primus.on("data", (data)=>{
             element = document.querySelector(`[data-id="${data.id}"]`);
             element.parentElement.removeChild(element);
             break;
+        case "createMessageBot":
+            let iframes = document.querySelectorAll("iframe").forEach(element => {
+                let src = element.getAttribute("src");
+                if (src.includes("?autoplay=1")) {
+                    let split = src.split("?");
+                    element.setAttribute("src", split[0]);
+                }
+            });
+
+            chat.innerHTML += `<div class="message message--red" data-id="${data.id}"><span class="message__user">${data.user}: </span>${data.message}</div>`;
+            let iframe = document.querySelector(`[data-id="${data.id}"]`).lastChild;
+            let iframeSrc = iframe.getAttribute("src") + "?autoplay=1";
+            iframe.setAttribute("src", iframeSrc);
+        break;
     }
 });
 

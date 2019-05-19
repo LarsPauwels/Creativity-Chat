@@ -243,6 +243,11 @@
     font-weight: $weightBigger;
 }
 
+.message__iframe {
+    display: block;
+    margin-top: 10px;
+}
+
 .input__container--chat {
   	flex: 1;
   	max-height: 100px;

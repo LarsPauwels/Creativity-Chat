@@ -10,18 +10,43 @@ let post = (req, res) => {
     m.text = text;
     m.timestamp = timestamp;
     m.save((err, product) => {
-        let id = product._id;
+        if (!err) {
+            let id = product._id;
         
-        res.json({
-            "status": "success",
-            "message": `Created message`,
-            "id": id
-        });
+            res.json({
+                "status": "success",
+                "message": `Created message`,
+                "id": id
+            });
+        } else {
+           res.json({
+                "status": "error",
+                "message": err
+            }); 
+        }
     });
 }
 
 let get = (req, res) => {
     Message.find((err, userDocs)=>{    
+        if (userDocs === null || userDocs.length == 0) {
+            res.json({
+                "status": "error",
+                "message": `Coudn't find any message`  
+            });
+        } else {
+            res.json({
+                "status": "success",
+                "message": userDocs
+            });
+        }
+    });
+}
+
+let getId = (req, res) => {
+    let id = req.params.id;
+
+    Message.findOne({'_id': id}, (err, userDocs)=>{    
         if (userDocs === null || userDocs.length == 0) {
             res.json({
                 "status": "error",
@@ -101,6 +126,7 @@ function getTimestamp(){
 
 }
 
+module.exports.getId = getId;
 module.exports.deleteId = deleteId;
 module.exports.putId = putId;
 module.exports.get = get;
