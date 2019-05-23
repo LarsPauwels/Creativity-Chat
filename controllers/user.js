@@ -4,12 +4,12 @@ let post = (req, res) => {
     var u = new User(req.body);
     u.save().then(item => {
       res.json({
-            "status": "success",
-            "message": `Created user with data: {username: ${req.body.username}}`
-        });
-    }).catch(err => {
-      res.status(400).send("unable to save to database");
+        "status": "success",
+        "message": `Created user with data: {username: ${req.body.username}}`
     });
+  }).catch(err => {
+      res.status(400).send("unable to save to database");
+  });
 }
 
 let getUser = (req, res) => {
@@ -23,10 +23,18 @@ let getUser = (req, res) => {
                     "message": `Coudn't find a user with username ${username}`  
                 });
             } else {
-                res.json({
-                    "status": "success",
-                    "message": userDocs
-                });
+                User.updateOne(
+                    {'_id': userDocs["_id"]},
+                    {$set: {active: 1}},
+                    (err, updateObject) => {
+                        if (!err) {
+                            res.json({
+                                "status": "success",
+                                "message": userDocs
+                            });
+                        }
+                    }
+                );
             }
         });
     } else {
@@ -44,12 +52,30 @@ let getUser = (req, res) => {
             }
         });
     }
-
-	/*res.json({
-		"status": "success",
-		"message": `GETTING user with username ${username}`	
-	});*/
 }
 
+let logout = (req, res) => {
+    let user = req.query.user;
+
+    User.updateOne(
+        {'username': user},
+        {$set: {active: 0}},
+        (err, updateObject) => {
+            if (!err) {
+                res.json({
+                    "status": "success",
+                    "message": `${user} logged out.`
+                });
+            } else {
+                res.json({
+                    "status": "error",
+                    "message": err
+                });
+            }
+        }
+    );
+}
+
+module.exports.logout = logout;
 module.exports.getUser = getUser;
 module.exports.post = post;
