@@ -65,3 +65,29 @@
     transition: $transitionStandard ease;
     transition-delay: 0.7s;
 }
+
+.logout {
+    width: 80%;
+    height: 42px;
+    background-color: $red;
+    border-radius: $borderStandard;
+    cursor: pointer;
+    color: #fff;
+    font-size: 18px;
+    position: relative;
+    text-transform: capitalize;
+    margin: 0 auto;
+    margin-bottom: 29px;
+}
+
+.logout__center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+}
+
+.logout__icon {
+    margin-left: 10px;
+}

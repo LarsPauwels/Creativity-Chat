@@ -63,7 +63,7 @@ class User {
 			if (this.passwordEqual(password, passwordConfirm)) {
 				password = sha1(password);
 				let url = "./api/v1/user";
-				let data = {username: user, password: password, timestamp: getTimestamp()};
+				let data = {username: user, password: password, timestamp: getTimestamp(), active: 1};
 
 				fetch(url,{
 					method:'post',
@@ -135,7 +135,7 @@ class User {
 
 
         that.primus.write({
-            "username": username
+            "username": username,
             "type": type
         });
     }

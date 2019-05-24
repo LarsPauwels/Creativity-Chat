@@ -99,7 +99,7 @@
     display: inline-block;
 }
 
-.user_status {
+.user__status {
 	font-size: $fontStandard;
     display: inline-block;
     overflow: hidden;
@@ -109,7 +109,7 @@
     color: $chatLight;
 }
 
-.user_status:before {
+.user__status:before {
 	display: inline-block;
 	margin-right: 5px;
 	content: '';
@@ -117,6 +117,10 @@
 	background-color: $green;
 	width: 10px;
 	height: 10px;
+}
+
+.user__status--red:before {
+    background-color: $red;
 }
 
 .chat__container {

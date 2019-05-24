@@ -6,6 +6,7 @@ let messageId = document.getElementById("messageId");
 let updateSend = document.getElementById("updateSend");
 let updateDecline = document.getElementById("updateDecline");
 let idInput = document.getElementById("messageId");
+let logout = document.getElementById("logout");
 
 class Message {
 
@@ -84,16 +85,16 @@ class Message {
                 if (element.device == "beamer" && Cookie.getCookie("username") == "admin"
                     || element.device == "computer" && Cookie.getCookie("username") == element.requester) {
                     chat.innerHTML += `<div class="message message--red" data-id="${element._id}"><span class="message__user">${element.user}: </span>${element.text}</div>`;
-                } else if (element.device == undefined) {
-                    if (Cookie.getCookie("username") == element.user) {
-                        chat.innerHTML += `<div class="message--right"><span class="message__delete fa fa-trash" onclick="removeMessage()"></span><div class="message" onclick="changeMessage(this)" data-id="${element._id}">${element.text}</div><div>`;
-                    } else {
-                        chat.innerHTML += `<div class="message message--red" data-id="${element._id}"><span class="message__user">${element.user}: </span>${element.text}</div>`;
-                    }
+            } else if (element.device == undefined) {
+                if (Cookie.getCookie("username") == element.user) {
+                    chat.innerHTML += `<div class="message--right"><span class="message__delete fa fa-trash" onclick="removeMessage()"></span><div class="message" onclick="changeMessage(this)" data-id="${element._id}">${element.text}</div><div>`;
+                } else {
+                    chat.innerHTML += `<div class="message message--red" data-id="${element._id}"><span class="message__user">${element.user}: </span>${element.text}</div>`;
                 }
+            }
 
-                i++;
-            });
+            i++;
+        });
             chat.scrollTop = chat.scrollHeight;
         }).catch(err => {
             console.log(err);
@@ -197,9 +198,9 @@ class IMDBot {
     static checkIntent(json, requester) {
         switch (json.entities.intent[0].value) {
             case "play_clip":
-                let device = json.entities.device[0].value;
-                IMDBot.youtubeRequest(json, device, requester);
-                break;
+            let device = json.entities.device[0].value;
+            IMDBot.youtubeRequest(json, device, requester);
+            break;
         }
     }
 
@@ -245,6 +246,25 @@ class IMDBot {
 }
 
 class User {
+    static setPrimus(user, status, type) {
+        let that = this;
+
+        this.primus = Primus.connect('/', {
+            reconnect: {
+                 max: Infinity // Number: The max delay before we try to reconnect.
+                , min: 500 // Number: The minimum delay before we try reconnect.
+                , retries: 10 // Number: How many times we should try to reconnect.
+            }
+        });
+
+        that.primus.write({
+            "user": user,
+            "type": type,
+            "status": status
+        });
+
+        return true;
+    }
 
     getUsers() {
         let url = "./api/v1/user";
@@ -258,8 +278,58 @@ class User {
             return response.json();
         }).then(json => {
             json.message.forEach(element => {
-                users.innerHTML += `<li class="user"><div class="user--center"><div class="user__picture"></div><span class="user__name">${element.username}</span><span class="user_status">Online</span></div></li>`
+                if (element.active == 1) {
+                    users.innerHTML += `<li class="user" data-user="${element.username}"><div class="user--center"><div class="user__picture"></div><span class="user__name">${element.username}</span><span class="user__status">Online</span></div></li>`
+                } else {
+                    users.innerHTML += `<li class="user" data-user="${element.username}"><div class="user--center"><div class="user__picture"></div><span class="user__name">${element.username}</span><span class="user__status user__status--red">Online</span></div></li>`
+                }
             });
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
+    logout() {
+        let username = Cookie.getCookie("username");
+        let url = `./api/v1/user?user=${username}`;
+        
+        fetch(url,{
+            method:'put',
+            headers: {
+                "Content-type": "application/json"
+            }
+        }).then(response => {
+            return response.json();
+        }).then(json => {
+            if (json.status == "success" && username != null) {
+                if(User.setPrimus(username, "Offline", "userStatus")) {
+                    Cookie.deleteCookie("username");
+                    location.href = 'index.html';
+                }
+            }
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
+    login() {
+        let username = Cookie.getCookie("username");
+        let url = `./api/v1/user?user=${username}`;
+
+        fetch(url,{
+            method:'get',
+            headers: {
+                "Content-type": "application/json"
+            }
+        }).then(response => {
+            return response.json();
+        }).then(json => {
+            if (json.status == "error") {
+                Cookie.deleteCookie("username");
+                location.href = 'index.html';
+            } else {
+                User.setPrimus(username, "Online", "userStatus");
+            }
         }).catch(err => {
             console.log(err);
         });
@@ -287,6 +357,10 @@ class Cookie {
         }
         return null;
     }
+
+    static deleteCookie(name) {   
+        document.cookie = name+'=; Max-Age=-99999999;';  
+    }
 }
 
 if (Cookie.getCookie("username") == null) {
@@ -310,14 +384,30 @@ messageInput.addEventListener('keypress', e => {
     }
 });
 
+logout.addEventListener('click', e => {
+    let u = new User();
+    u.logout();
+    e.preventDefault();
+});
+
+window.onbeforeunload = () => {
+    let u = new User();
+    u.logout();
+};
+
+window.onload = () => {
+    let u = new User();
+    u.login();
+}
+
 function messagePlaced() {
     let messageValue = message.value;
     if (messageValue != "") {
         let botCommant = messageValue.search("@IMDBot");
-       if (botCommant != -1) {
+        if (botCommant != -1) {
             let b = new IMDBot();
             b.botRequest();
-       }
+        }
         let m = new Message();
         m.createMessage();
     }
@@ -336,7 +426,7 @@ primus.on("data", (data)=>{
 
     switch (data.type) {
         case "addUser":
-            users.innerHTML += `<li class="user"><div class="user--center"><div class="user__picture"></div><span class="user__name">${data.username}</span><span class="user_status">Online</span></div></li>`;
+            users.innerHTML += `<li class="user" data-user="${data.username}"><div class="user--center"><div class="user__picture"></div><span class="user__name">${data.username}</span><span class="user__status">Online</span></div></li>`;
             break;
         case "createMessage":
             if (Cookie.getCookie("username") == data.user) {
@@ -344,7 +434,7 @@ primus.on("data", (data)=>{
             } else {
                 chat.insertAdjacentHTML("beforeend", `<div class="message message--red" data-id="${data.id}"><span class="message__user">${data.user}: </span>${data.message}</div>`);
             }
-            break;
+        break;
         case "updateMessage":
             element = document.querySelector(`[data-id="${data.id}"]`);
             if(Cookie.getCookie("username") == data.user){
@@ -352,13 +442,12 @@ primus.on("data", (data)=>{
             }else{
                 element.innerHTML = `<span class="message__user">${data.user}: </span> ${data.message}`;
             }
-            break;
+        break;
         case "deleteMessage":
             element = document.querySelector(`[data-id="${data.id}"]`);
             element.parentElement.removeChild(element);
             break;
         case "createMessageBot":
-        console.log("test");
             if (data.device == "computer" && Cookie.getCookie("username") == data.requester 
                 || data.device == "beamer" && Cookie.getCookie("username") == "admin") {
                 let lastElment;
@@ -372,15 +461,25 @@ primus.on("data", (data)=>{
                 });
 
                 chat.insertAdjacentHTML("beforeend", `<div class="message message--red" data-id="${data.id}"><span class="message__user">${data.user}: </span>${data.message}</div>`);
-                
+
                 let iframe = document.querySelector(`[data-id="${data.id}"]`).lastChild;
-                
+
                 if (lastElment != iframe) {
                     let iframeSrc = iframe.getAttribute("src") + "?autoplay=1";
                     iframe.setAttribute("src", iframeSrc);
                 }
             }
-        break;
+            break;
+        case "userStatus":
+            element = document.querySelector(`[data-user="${data.user}"]`);
+            let userStatus = element.children[0].children[2];
+            userStatus.innerHTML = data.status;
+            if (data.status == "Online") {
+                userStatus.classList.remove("user__status--red");
+            } else {
+                userStatus.classList.add("user__status--red");
+            }
+            break;
     }
 });
 
