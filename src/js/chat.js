@@ -1,3 +1,6 @@
+let dayArray = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
+let monthArray = ['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+
 let messageBtn = document.getElementById("sendMessage");
 let messageInput = document.getElementById("message");
 let chat = document.getElementById("chat");
@@ -196,11 +199,21 @@ class IMDBot {
     }
 
     static checkIntent(json, requester) {
+        let device;
+
+        if(json.entities.device != undefined) {
+            device = json.entities.device[0].value;
+        } else {
+            device = "computer";
+        }
+
         switch (json.entities.intent[0].value) {
             case "play_clip":
-            let device = json.entities.device[0].value;
-            IMDBot.youtubeRequest(json, device, requester);
+                IMDBot.youtubeRequest(json, device, requester);
             break;
+            case "get_weather":
+                let date = json.entities.datetime[0].value;
+                IMDBot.getMyLocation(date, device, requester);
         }
     }
 
@@ -216,6 +229,38 @@ class IMDBot {
             let iframe = `<iframe class="message__iframe" width="560" height="315" src="https://www.youtube.com/embed/${json.items[0].id.videoId}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
             let messageIframe = text + iframe;
             IMDBot.createMessage(messageIframe, device, requester);
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
+    static getMyLocation(date, device, requester) {
+        navigator.geolocation.getCurrentPosition(position => {
+            let lat = position.coords.latitude;
+            let long = position.coords.longitude;
+            IMDBot.weatherRequest(lat, long, date, device, requester);
+        }, err => {
+            console.log("Location: " + err);
+        });
+
+        return location;
+    }
+
+    static weatherRequest(lat, long, date, device, requester) {
+        let timestamp = date.split("T");
+        let day = new Date(timestamp).getDay();
+        let dayNumber = new Date(timestamp).getDate();
+        let month = new Date(timestamp).getMonth();
+        let unix = new Date(timestamp[0]).getTime() / 1000;
+        let url = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/c0c83edd4a137df284ba6175ae9976af/${lat}, ${long}, ${unix}?units=si`;
+
+        fetch(url,{
+            method:'get'
+        }).then(response => {
+            return response.json();
+        }).then(json => {
+            let message = `${dayArray[day]}, ${dayNumber} ${monthArray[month]} zal het '${json.currently.summary}' zijn met een temperatuur van ${json.currently.temperature}°C.`;
+            IMDBot.createMessage(message, device, requester);
         }).catch(err => {
             console.log(err);
         });
@@ -262,8 +307,6 @@ class User {
             "type": type,
             "status": status
         });
-
-        return true;
     }
 
     getUsers() {
@@ -302,10 +345,7 @@ class User {
             return response.json();
         }).then(json => {
             if (json.status == "success" && username != null) {
-                if(User.setPrimus(username, "Offline", "userStatus")) {
-                    Cookie.deleteCookie("username");
-                    location.href = 'index.html';
-                }
+                User.setPrimus(username, "Offline", "userStatus");
             }
         }).catch(err => {
             console.log(err);
@@ -462,11 +502,13 @@ primus.on("data", (data)=>{
 
                 chat.insertAdjacentHTML("beforeend", `<div class="message message--red" data-id="${data.id}"><span class="message__user">${data.user}: </span>${data.message}</div>`);
 
-                let iframe = document.querySelector(`[data-id="${data.id}"]`).lastChild;
+                if(document.querySelector(`[data-id="${data.id}"]`) == undefined) {
+                    let iframe = document.querySelector(`[data-id="${data.id}"]`).lastChild;
 
-                if (lastElment != iframe) {
-                    let iframeSrc = iframe.getAttribute("src") + "?autoplay=1";
-                    iframe.setAttribute("src", iframeSrc);
+                    if (lastElment != iframe) {
+                        let iframeSrc = iframe.getAttribute("src") + "?autoplay=1";
+                        iframe.setAttribute("src", iframeSrc);
+                    }
                 }
             }
             break;
@@ -478,9 +520,12 @@ primus.on("data", (data)=>{
                 userStatus.classList.remove("user__status--red");
             } else {
                 userStatus.classList.add("user__status--red");
+                Cookie.deleteCookie("username");
+            location.href = 'index.html';
             }
             break;
     }
+    chat.scrollTop = chat.scrollHeight;
 });
 
 function changeMessage(element) {
